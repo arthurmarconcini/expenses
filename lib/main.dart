@@ -1,5 +1,6 @@
 import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main(List<String> args) {
   return runApp(const ExpensesApp());
@@ -10,24 +11,27 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Home());
+    return MaterialApp(home: MyHomePage());
   }
 }
 
-class Home extends StatelessWidget {
-  Home({super.key});
+class MyHomePage extends StatelessWidget {
+  MyHomePage({super.key});
+
+  final titleController = TextEditingController();
+  final valueController = TextEditingController();
 
   final _transactions = [
     Transaction(
       id: 't1',
       title: 'Novo Tênis de Corrida',
-      value: '310.76',
+      value: 310.76,
       date: DateTime.now(),
     ),
     Transaction(
       id: 't2',
       title: 'Conta de Luz',
-      value: '211.30',
+      value: 211.2,
       date: DateTime.now(),
     )
   ];
@@ -37,7 +41,6 @@ class Home extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: const Text("Despesas Pessoais")),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(
@@ -64,7 +67,7 @@ class Home extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        tr.value.toString(),
+                        'R\$ ${tr.value.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -83,7 +86,7 @@ class Home extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          tr.date.toString(),
+                          DateFormat('d MMM y').format(tr.date),
                           style: const TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -91,7 +94,45 @@ class Home extends StatelessWidget {
                   ]),
                 );
               }).toList(),
-            ])
+            ]),
+            Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Título',
+                      ),
+                    ),
+                    TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: 'Valor (R\$)',
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            print(titleController.text);
+                            print(valueController.text);
+                          },
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.purple),
+                          ),
+                          child: const Text('Nova Transação'),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ));
   }
